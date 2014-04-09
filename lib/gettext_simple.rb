@@ -13,7 +13,7 @@ class GettextSimple
     @i18n = @args[:i18n]
     
     if @i18n
-      @default_locale = @i18n.default_locale
+      @default_locale = I18n.default_locale
     else
       @default_locale = @args[:default_locale]
     end
