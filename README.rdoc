@@ -1,6 +1,21 @@
 = gettext_simple
 
-Description goes here.
+A very simple implementation of Gettext for Ruby.
+
+This is how it could be initialized in Rails and take the locale from I18n.locale:
+```ruby
+require "gettext_simple"
+gettext_simple = GettextSimple.new(:i18n => true)
+gettext_simple.load_dir("#{__dir__}/../../locales_gettext")
+gettext_simple.register_kernel_methods
+
+echo _("Hello world")
+```
+
+Replacements are done this way:
+```ruby
+echo _("Hello %{name}", :name => "Kasper") #=> "Hello Kasper"
+```
 
 == Contributing to gettext_simple
  
