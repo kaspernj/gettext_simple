@@ -9,12 +9,12 @@ gettext_simple = GettextSimple.new(:i18n => true)
 gettext_simple.load_dir("#{__dir__}/../../locales_gettext")
 gettext_simple.register_kernel_methods
 
-echo _("Hello world")
+puts _("Hello world")
 ```
 
 Replacements are done this way:
 ```ruby
-echo _("Hello %{name}", :name => "Kasper") #=> "Hello Kasper"
+puts _("Hello %{name}", :name => "Kasper") #=> "Hello Kasper"
 ```
 
 == Contributing to gettext_simple
