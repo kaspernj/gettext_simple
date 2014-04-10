@@ -8,6 +8,7 @@ class GettextSimple
       :default_locale => "en"
     }.merge(args)
     @locales = {}
+    @debug = @args[:debug]
     
     # To avoid doing a hash lookup on every translate.
     @i18n = @args[:i18n]
@@ -37,20 +38,26 @@ class GettextSimple
     check_folders = ["LC_MESSAGES", "LC_ALL"]
     
     Dir.foreach(dir) do |file|
+      debug "New locale folder found: '#{file}'." if @debug
+      
       fn = "#{dir}/#{file}"
-      if File.directory?(fn) && file.match(/^[a-z]{2}/)
-        @locales[file] = {} unless @locales[file]
+      if !File.directory?(fn) || !file.match(/^[a-z]{2}/)
+        debug "Skipping: '#{file}'." if @debug
+        next
+      end
+      
+      @locales[file] = {} unless @locales[file]
+      
+      check_folders.each do |fname|
+        fpath = "#{dir}/#{file}/#{fname}"
+        next if !File.exists?(fpath) || !File.directory?(fpath)
+        debug "Found subfolder in '#{file}': '#{fname}'." if @debug
         
-        check_folders.each do |fname|
-          fpath = "#{dir}/#{file}/#{fname}"
-          
-          if File.exists?(fpath) && File.directory?(fpath)
-            Dir.foreach(fpath) do |pofile|
-              if pofile.match(/\.po$/)
-                pofn = "#{dir}/#{file}/#{fname}/#{pofile}"
-                scan_pofile(file, pofn)
-              end
-            end
+        Dir.foreach(fpath) do |pofile|
+          if pofile.match(/\.po$/)
+            debug "Starting to parse '#{pofile}'." if @debug
+            pofn = "#{dir}/#{file}/#{fname}/#{pofile}"
+            scan_pofile(file, pofn)
           end
         end
       end
@@ -78,12 +85,14 @@ class GettextSimple
       end
     end
     
+    debug "Translation with locale '#{locale}' and replaces '#{replaces}': '#{str}' to '#{translated_str}'." if @debug
+    
     return translated_str
   end
   
   def translate(str, replaces = nil)
     if @i18n
-      locale = I18n.locale
+      locale = I18n.locale.to_s
     elsif locale = Thread.current[:gettext_simple_locale]
       # Locale already set through condition.
     else
@@ -99,6 +108,10 @@ class GettextSimple
   end
   
 private
+
+  def debug(str)
+    $stderr.puts str if @debug
+  end
   
   def scan_pofile(locale, filepath)
     current_id = nil
@@ -107,6 +120,7 @@ private
     reading_id = false
     reading_translation = false
     
+    debug "Opening file for parsing: '#{filepath}' in locale '#{locale}'." if @debug
     File.open(filepath, "r", :encoding => @args[:encoding]) do |fp|
       fp.each_line do |line|
         if match = line.match(/^(msgid|msgstr)\s+"(.*)"$/)
@@ -150,6 +164,10 @@ private
   
   def add_translation(locale, key, val)
     raise "No such language: '#{locale}'." unless @locales.key?(locale)
-    @locales[locale][key] = val unless val.to_s.empty?
+    
+    if !key.to_s.empty? && !val.to_s.empty?
+      debug "Found translation for locale '#{locale}' '#{key}' which is: '#{val}'." if @debug
+      @locales[locale][key] = val
+    end
   end
 end
