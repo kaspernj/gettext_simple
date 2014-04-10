@@ -137,8 +137,8 @@ private
             current_id = nil
             current_translation = nil
           end
-        elsif line.start_with?("#: ")
-          # Line is a comment explaining where the translation comes from - ignore.
+        elsif line.start_with?("#")
+          # Line is a comment - ignore.
         else
           raise "Couldn't understand line: '#{line}'."
         end
