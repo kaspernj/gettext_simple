@@ -5,16 +5,16 @@
 
 Gem::Specification.new do |s|
   s.name = "gettext_simple"
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kasper Johansen"]
-  s.date = "2014-04-09"
+  s.date = "2014-04-10"
   s.description = "A very simple version of Gettext reading .po files directly."
   s.email = "k@spernj.org"
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.rdoc"
+    "README.md"
   ]
   s.files = [
     ".document",
@@ -22,13 +22,14 @@ Gem::Specification.new do |s|
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
-    "README.rdoc",
+    "README.md",
     "Rakefile",
     "VERSION",
     "gettext_simple.gemspec",
     "include/kernel_methods.rb",
     "lib/gettext_simple.rb",
     "spec/gettext_simple_spec.rb",
+    "spec/sample_file.po",
     "spec/spec_helper.rb"
   ]
   s.homepage = "http://github.com/kaspernj/gettext_simple"
