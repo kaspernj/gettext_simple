@@ -101,13 +101,59 @@ class GettextSimple
 private
   
   def scan_pofile(locale, filepath)
-    cont = nil
-    File.open(filepath, "r", {:encoding => @args[:encoding]}) do |fp|
-      cont = fp.read.encode("utf-8")
+    current_id = nil
+    current_translation = nil
+    
+    reading_id = false
+    reading_translation = false
+    
+    File.open(filepath, "r", :encoding => @args[:encoding]) do |fp|
+      fp.each_line do |line|
+        if match = line.match(/^(msgid|msgstr)\s+"(.*)"$/)
+          if match[1] == "msgid"
+            current_id = match[2]
+            reading_id = true
+          elsif match[1] == "msgstr"
+            current_translation = match[2]
+            reading_id = false
+            reading_translation = true
+          else
+            raise "Unknown translation parameter: '#{match[1]}'."
+          end
+        elsif match = line.match(/^"(.*)"$/)
+          if reading_id
+            current_id << match[1]
+          elsif reading_translation
+            current_translation << match[1]
+          else
+            raise "Text given but don't know what to do with it."
+          end
+        elsif line.match(/^(\r|)\n$/)
+          if reading_id
+            reading_id = false
+          elsif reading_translation
+            add_translation(locale, current_id, current_translation)
+            reading_translation = false
+            current_id = nil
+            current_translation = nil
+          end
+        elsif line.start_with?("#: ")
+          # Line is a comment explaining where the translation comes from - ignore.
+        else
+          raise "Couldn't understand line: '#{line}'."
+        end
+      end
+      
+      add_translation(locale, current_id, current_translation) if reading_translation
     end
     
-    cont.scan(/msgid\s+\"(.+)\"(\r|)\nmsgstr\s+\"(.+)\"(\r|)\n(\r|)\n/) do |match|
-      @locales[locale][match[0]] = match[2].to_s.encode("utf-8")
-    end
+    #cont.scan(/msgid\s+\"(.+)\"(\r|)\nmsgstr\s+\"(.+)\"(\r|)\n(\r|)\n/) do |match|
+    #  @locales[locale][match[0]] = match[2].to_s.encode("utf-8")
+    #end
+  end
+  
+  def add_translation(locale, key, val)
+    raise "No such language: '#{locale}'." unless @locales.key?(locale)
+    @locales[locale][key] = val
   end
 end
