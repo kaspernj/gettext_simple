@@ -6,7 +6,7 @@ This is how it could be initialized in Rails and take the locale from I18n.local
 ```ruby
 require "gettext_simple"
 gettext_simple = GettextSimple.new(:i18n => true)
-gettext_simple.load_dir("#{__dir__}/../../locales_gettext")
+gettext_simple.load_dir("#{Rails.root}/locales_gettext")
 gettext_simple.register_kernel_methods
 
 puts _("Hello world")
