@@ -146,14 +146,10 @@ private
       
       add_translation(locale, current_id, current_translation) if reading_translation
     end
-    
-    #cont.scan(/msgid\s+\"(.+)\"(\r|)\nmsgstr\s+\"(.+)\"(\r|)\n(\r|)\n/) do |match|
-    #  @locales[locale][match[0]] = match[2].to_s.encode("utf-8")
-    #end
   end
   
   def add_translation(locale, key, val)
     raise "No such language: '#{locale}'." unless @locales.key?(locale)
-    @locales[locale][key] = val
+    @locales[locale][key] = val unless val.to_s.empty?
   end
 end

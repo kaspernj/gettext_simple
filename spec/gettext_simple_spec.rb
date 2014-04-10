@@ -19,6 +19,10 @@ describe "GettextSimple" do
       fp.puts "\"test mange\"\n"
       fp.puts "\" linjer\"\n"
       fp.puts "\n"
+      
+      fp.puts "msgid \"empty translation\"\n"
+      fp.puts "msgstr \"\"\n"
+      fp.puts "\n"
     end
     
     @gs = GettextSimple.new
@@ -59,5 +63,9 @@ describe "GettextSimple" do
     test_value = "BeachInspectors.com er dit online værktøj til den bedste strand ferie i Danmark. Find bedømmelser og insider tips til danske strande og bedøm dine favoritstrande."
     
     da[test_key].should eq test_value
+  end
+  
+  it "should ignore empty translations" do
+    @gs.instance_variable_get(:@locales)["da"].keys.should_not include "empty translation"
   end
 end
