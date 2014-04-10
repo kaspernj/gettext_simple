@@ -74,14 +74,14 @@ class GettextSimple
     raise "Locale was not found: '#{locale}' in '#{@locales.keys.join(", ")}'." unless @locales.key?(locale)
     
     if !@locales[locale].key?(str)
-      translated_str = str
+      translated_str = str.to_s
     else
       translated_str = @locales[locale][str]
     end
     
     if replaces
       replaces.each do |key, val|
-        translated_str = translated_str.gsub("%{#{key}}", val)
+        translated_str = translated_str.gsub("%{#{key}}", val.to_s)
       end
     end
     

@@ -68,4 +68,9 @@ describe "GettextSimple" do
   it "should ignore empty translations" do
     @gs.instance_variable_get(:@locales)["da"].keys.should_not include "empty translation"
   end
+  
+  it "should translate integers with replacements" do
+    @gs.translate(1, :name => "kasper")
+    @gs.translate("hejsa", :name => 5)
+  end
 end
