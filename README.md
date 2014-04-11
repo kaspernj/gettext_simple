@@ -2,11 +2,18 @@
 
 A very simple implementation of Gettext for Ruby.
 
-This is how it could be initialized in Rails and take the locale from I18n.locale:
+# Install
+
+Start by putting this in your Gemfile:
+```ruby
+gem 'gettext_simple'
+```
+
+This is how it could be initialized in Rails and take the locale from I18n.locale by placing this code in `"#{Rails.root}/config/initializers/gettext_simple.rb`:
 ```ruby
 require "gettext_simple"
 gettext_simple = GettextSimple.new(:i18n => true)
-gettext_simple.load_dir("#{__dir__}/../../locales_gettext")
+gettext_simple.load_dir("#{Rails.root}/locales_gettext")
 gettext_simple.register_kernel_methods
 
 puts _("Hello world")
