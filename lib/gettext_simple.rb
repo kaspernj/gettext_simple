@@ -69,9 +69,8 @@ class GettextSimple
   # str = "Hello" #=> "Hello"
   # gtext.trans("da_DK", str) #=> "Hej"
   def translate_with_locale(locale, str, replaces = nil)
-    locale = locale.to_s
     str = str.to_s
-    raise "Locale was not found: '#{locale}' in '#{@locales.keys.join(", ")}'." unless @locales.key?(locale)
+    raise ArgumentError, "Locale was not found: '#{locale}' in '#{@locales.keys.join(", ")}'." unless @locales.key?(locale)
     
     if !@locales[locale].key?(str)
       translated_str = str.to_s
@@ -88,6 +87,10 @@ class GettextSimple
     debug "Translation with locale '#{locale}' and replaces '#{replaces}': '#{str}' to '#{translated_str}'." if @debug
     
     return translated_str
+  end
+  
+  def locale_exists?(locale)
+    @locales.key?(locale)
   end
   
   def translate(str, replaces = nil)
@@ -163,7 +166,7 @@ private
   end
   
   def add_translation(locale, key, val)
-    raise "No such language: '#{locale}'." unless @locales.key?(locale)
+    raise ArgumentError, "No such language: '#{locale}'." unless @locales.key?(locale)
     
     if !key.to_s.empty? && !val.to_s.empty?
       debug "Found translation for locale '#{locale}' '#{key}' which is: '#{val}'." if @debug
