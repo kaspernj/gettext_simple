@@ -123,6 +123,8 @@ private
     reading_id = false
     reading_translation = false
     
+    fuzzy = false
+    
     debug "Opening file for parsing: '#{filepath}' in locale '#{locale}'." if @debug
     File.open(filepath, "r", :encoding => @args[:encoding]) do |fp|
       fp.each_line do |line|
@@ -149,11 +151,14 @@ private
           if reading_id
             reading_id = false
           elsif reading_translation
-            add_translation(locale, current_id, current_translation)
+            add_translation(locale, current_id, current_translation) unless fuzzy
             reading_translation = false
             current_id = nil
             current_translation = nil
+            fuzzy = false
           end
+        elsif line.match(/^#, fuzzy$/)
+          fuzzy = true
         elsif line.start_with?("#")
           # Line is a comment - ignore.
         else
@@ -161,7 +166,7 @@ private
         end
       end
       
-      add_translation(locale, current_id, current_translation) if reading_translation
+      add_translation(locale, current_id, current_translation) if reading_translation && !fuzzy
     end
   end
   

@@ -23,6 +23,11 @@ describe "GettextSimple" do
       fp.puts "msgid \"empty translation\"\n"
       fp.puts "msgstr \"\"\n"
       fp.puts "\n"
+      
+      fp.puts "#, fuzzy"
+      fp.puts "msgid \"fuzzy translation\"\n"
+      fp.puts "msgstr \"tralalala\"\n"
+      fp.puts "\n"
     end
     
     @gs = GettextSimple.new
@@ -72,5 +77,9 @@ describe "GettextSimple" do
   it "should translate integers with replacements" do
     @gs.translate(1, :name => "kasper")
     @gs.translate("hejsa", :name => 5)
+  end
+  
+  it "should not read fuzzy translations" do
+    @gs.translate_with_locale("da", "fuzzy translation").should eq "fuzzy translation"
   end
 end
