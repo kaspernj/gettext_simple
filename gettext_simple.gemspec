@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "gettext_simple"
-  s.version = "0.0.8"
+  s.version = "0.0.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kasper Johansen"]
-  s.date = "2014-05-09"
+  s.date = "2014-05-12"
   s.description = "A very simple version of Gettext reading .po files directly."
   s.email = "k@spernj.org"
   s.extra_rdoc_files = [
