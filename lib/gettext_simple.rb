@@ -23,7 +23,7 @@ class GettextSimple
   end
   
   def register_kernel_methods
-    require "#{__dir__}/../include/kernel_methods"
+    require "#{File.dirname(__FILE__)}/../include/kernel_methods"
     $gettext_simple_kernel_instance = self
   end
   
